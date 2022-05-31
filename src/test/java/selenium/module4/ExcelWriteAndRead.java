@@ -107,5 +107,6 @@ public class ExcelWriteAndRead {
 		driver.manage().window().maximize();
 		driver.get("https://codewithsushil.in/4.03readWriteExcel.html");
 		driver.findElement(By.xpath("//*[@type='text']")).sendKeys(date);
+		System.out.println(driver.getTitle());
     }  
 }  
