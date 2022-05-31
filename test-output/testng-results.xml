@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testng-results ignored="0" total="1" passed="1" failed="0" skipped="0">
+  <reporter-output>
+  </reporter-output>
+  <suite started-at="2022-05-31T21:53:35 IST" name="Suite1" finished-at="2022-05-31T21:53:43 IST" duration-ms="8548">
+    <groups>
+    </groups>
+    <test started-at="2022-05-31T21:53:35 IST" name="Regression1" finished-at="2022-05-31T21:53:43 IST" duration-ms="8548">
+      <class name="selenium.module4.ExcelWriteAndRead">
+        <test-method signature="excel()[pri:0, instance:selenium.module4.ExcelWriteAndRead@a3d8174]" started-at="2022-05-31T21:53:35 IST" name="excel" finished-at="2022-05-31T21:53:43 IST" duration-ms="8457" status="PASS">
+          <reporter-output>
+          </reporter-output>
+        </test-method> <!-- excel -->
+      </class> <!-- selenium.module4.ExcelWriteAndRead -->
+    </test> <!-- Regression1 -->
+  </suite> <!-- Suite1 -->
+</testng-results>
