@@ -12,14 +12,12 @@ public class EmailValidation {
 		String regex = "^(.+)@(.+)$";
 		Pattern pattern = Pattern.compile(regex);
 		String email = "test@gmail.com";
-
-		String[] str = email.split(regex);
-		for (String st : str) {
-			System.out.println("-->" + st);
-		}
-
 		Matcher matcher = pattern.matcher(email);
 		System.out.println(email + " :\"\" " + matcher.matches());
+		
+		
+
+		
 
 		/**
 		 * to escape we need to use \" \"

@@ -48,7 +48,7 @@ public class TakeScreenShotAndEmail {
 		email.setAuthenticator(new DefaultAuthenticator("test717759@gmail.com", "test717759@123"));
 		email.setSSLOnConnect(true);
 		email.setHostName("smtp.gmail.com");
-		email.addTo("satheeshv.ece@gmail.com");
+		email.addTo("test717759@gmail.com");
 		email.setFrom("test717759@gmail.com");
 		email.setSubject("The picture");
 		email.setMsg("Here is the picture you wanted");

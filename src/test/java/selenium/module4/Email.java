@@ -16,10 +16,10 @@ public class Email {
 		email.setSmtpPort(465);
 		email.setAuthenticator(new DefaultAuthenticator("test717759@gmail.com", "test717759@123"));
 		email.setSSLOnConnect(true);
-		email.setFrom("satheeshv30@gmail.com");
+		email.setFrom("test717759@gmail.com");
 		email.setSubject("TestMail");
 		email.setMsg("This is a test mail ... :-)");
-		email.addTo("satheeshv.ece@gmail.com");
+		email.addTo("test717759@gmail.com");
 		email.send();
 		System.out.println("Email Sent Successfully");
 	}

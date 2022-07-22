@@ -22,20 +22,23 @@ public class VariablesAndMethods2 {
 		// Compile time error Unable to access local variable in another method -- System.out.println(str);
 		test2();
 		System.out.println(data);
+		//System.out.println(data1);
 		System.out.println(v.data1);
+		System.out.println(a);
+		v.display();
 
 	}
 	
 	public void test1() {
 		
-		String str = "New"; // Local Variable
+	String str = "New"; // Local Variable
 		System.out.println(str);
 		System.out.println(a);
 		test2();
 		System.out.println(data);
 		System.out.println(data1);
-	//	System.out.println(v.data1);
-
+	//System.out.println(v.data1);
+display();
 		// Compile time error  -- System.out.println(data);
 	}
 	
@@ -45,4 +48,7 @@ public class VariablesAndMethods2 {
 		// test1();
 	}
 
+	void display(){
+		System.out.println("display");
+	}
 }

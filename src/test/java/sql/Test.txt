@@ -1,0 +1,32 @@
+SELECT - extracts data from a database
+UPDATE - updates data in a database
+DELETE - deletes data from a database
+INSERT INTO - inserts new data into a database
+CREATE DATABASE - creates a new database
+ALTER DATABASE - modifies a database
+CREATE TABLE - creates a new table
+ALTER TABLE - modifies a table
+DROP TABLE - deletes a table
+CREATE INDEX - creates an index (search key)
+DROP INDEX - deletes an index
+
+
+
+Select * from evidencecapture.evidence;
+Select * from evidecencapture.leanerns;
+select * from evidencecapture.allocation;
+Select * from  evidecencapture.leanerns where allcoationId="";
+Select * from  evidecencapture.leanerns where AllocationId In (Select AllocationID from evidencecapture.allocation where code="9dr0" );
+Select * from evidecencapture.leanerns where seriescode=1906 AND UnitCode=9dro;
+Select * from evidecencapture.leanerns where seriescode=1906 OR (UnitCode=9dro AND paper=english);
+Select * from evidecencapture.leanerns NOT unicode=4EA1 And NOT unitcode=9dro;
+Select count(Distinct  AllocationID) from evidecencapture.leanerns where unitcode=9dr0;
+Select * from evidecencapture.leanerns where unitcode=9dro Order By createdtime DESC;
+Update evidecencapture.learners Set LPCode="123" AANumber ="" Where AllcoationID="";
+Select max(allocationID) where uniccode=""
+Select * from adminmaterial where sahredfile name  LIKE %TEST%;
+
+ 
+
+
+

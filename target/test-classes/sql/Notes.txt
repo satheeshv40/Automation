@@ -1,0 +1,615 @@
+API (middle tyre layer)
+
+Its a interface between a client and server
+
+API is an independent of any langauage () - 
+Fornt end collect all the inputs and send it to api over HTTP request( HTTP Protocal is independent of any langauage)
+data representation - inputs will be send via json or xml over http protocal to api (both )
+
+RestAssured.given();
+REST Assured is a Java DSL for simplifying testing of REST based services built on top of HTTP Builder.It supports POST, GET, PUT, DELETE, HEAD, PATCH and OPTIONSrequests and to verify the response of these requests.
+
+
+Can you explain RequestSpecification request RestAssured given ();?
+RequestSpecification is an interface that allows you to specify how the request will look like.
+This interface has readymade methods to define base URL, base path, headers, etc. 
+We need to use given() method of RestAssured class to get a reference for RequestSpecification
+
+REST (is one of the architectural design to create apis) API - Lightwight protocal and flexible way of coding comapred to
+Soap API(Follows some rules and regulations need to be followed)
+EndPoind - address where api is hosted in server
+ 
+Type of HTTP method or operations to interacte/communciate to api
+GET,PUT,DELETE,POST - CRUD Operations
+
+resources - Api Name cretaed in the server, we will using the respective to use the service 
+google.com/maps - google.com - base url, maps - resources
+URI
+
+REST - Representational  state transfer (it relies on stateless, client-server, communications protocal) in all cases http protocal
+Restfull - Rest Api is also known as restfull api its follows the rest for developing api
+
+stateless - the state of the application is not maintained in REST, if we delete a resources from server, 
+we cant expect the delete information need to be passed in the next request
+
+inorder to ensure the request is deleted, we need to call the GET Request
+
+key elements of RestFul
+resources - www.google.com/maps
+verbs - put,post,delete,get
+request headers
+request body
+response body
+response headers
+
+If the api requires paramter there are two methods
+path paramater (drilling down to another subresources or rerouting to other resources)- https://amamzon.com/orders/112
+orders - resources
+112 - sub resources
+
+query paramater - drilling down with the exisiting request resources only (like filter or sorting)
+https://www.google.com/search?q=test&source=hp&ei=UuNnYry3H4KmmAXcyZr4DA&iflsig=AHkkrS4AAAAAYmfxYuoWKNqY-Py-ToJWlRD3twhr6HFJ&ved=0ahUKEwi8qKej27H3AhUCE6YKHdykBs8Q4dUDCAc&uact=5&oq=test&gs_lcp=Cgdnd3Mtd2l6EAMyCAgAEIAEELEDMgsIABCABBCxAxCDATIICAAQgAQQsQMyCwgAEIAEELEDEIMBMgUIABCABDIFCAAQgAQyCwgAEIAEELEDEIMBMgUIABCABDILCAAQgAQQsQMQgwEyCAgAEIAEELEDOhEILhCABBCxAxCDARDHARCvAToRCC4QgAQQsQMQgwEQxwEQ0QM6CAgAELEDEIMBOgsILhCABBDHARDRAzoRCC4QgAQQsQMQgwEQxwEQowI6DggAEIAEELEDEIMBEMkDOgUIABCSA1AAWKsEYL0MaABwAHgAgAGjBIgB9gmSAQcyLTMuNS0xmAEAoAEB&sclient=gws-wiz
+?parametername=value&nextparamatername=value
+path paramater - 
+
+endpoint
+baseurl/resources/paramater(Query/Path)
+
+headers/cookies 
+Headers represents the metadata associated with API request and Response
+example: Autho
+
+
+
+API Through Automation by using Java
+
+// Given - All input details - Query paramater or path parameter, Auth or Headers or body
+// When - Submit the API (submitting the request by using get or post or delete) - Resources & HTTP Methods
+// Then - Validate response (What are all the validations performed on the response )
+Then().assertThat().statusResponseCode().body("",equalTo("")).header("","");
+
+log().all();
+
+given().queryparam("","").header("","").body(accepts String)
+.when().post(resources).then().asserThat().
+
+extract().response().asString()
+
+json response 
+[] - array - collections of elements
+
+
+
+
+body accecpts json as a String
+Content of file to String - Contenet of file can be convereted to Byte by using Files.readAllBytes method and Byte to String by creating String object
+
+.given().body(new String (Files.readAllBytes(Paths.getUrl(""))))
+
+To Send Attachments - multiPart() method - for this we need to add header as header("ContentType","multiPart/form-data")
+
+.multiPart("",new File(""))
+
+Session value store and use it subsequent request and we should pass it before the when() Method
+
+SessionFilter rs = new SessionFilter();
+
+given().header("contenttype","application/json").body("").filter(rs).when().post("")
+
+relaxedHTTPSValidation() method to get ride of https authecation 
+
+
+CODE EXAMPLE
+
+package files;
+import static io.restassured.RestAssured.*;
+import java.io.File;
+import org.testng.Assert;
+import io.restassured.RestAssured;
+import io.restassured.filter.session.SessionFilter;
+import io.restassured.path.json.JsonPath;
+
+public class JiraTest {
+public static void main(String[] args) {
+// TODO Auto-generated method stub
+RestAssured.baseURI="http://localhost:8080";
+//Login Scenario
+SessionFilter session=new SessionFilter();
+String response=given().relaxedHTTPSValidation().header("Content-Type","application/json").body("{\r\n" +
+"    \"username\": \"RahulShetty\",\r\n" +
+"    \"password\": \"XXXX11\"\r\n" +
+"}").log().all().filter(session).when().post("/rest/auth/1/session").then().log().all().extract().response().asString();
+String expectedMessage ="Hi How are you?";
+//Add comment
+String addCommentResponse = given().pathParam("key", "10101").log().all().header("Content-Type","application/json").body("{\r\n" +
+"    \"body\": \""+expectedMessage+"\",\r\n" +
+"    \"visibility\": {\r\n" +
+"        \"type\": \"role\",\r\n" +
+"        \"value\": \"Administrators\"\r\n" +
+"    }\r\n" +
+"}").filter(session).when().post("/rest/api/2/issue/{key}/comment").then().log().all()
+.assertThat().statusCode(201).extract().response().asString();
+JsonPath js=new JsonPath(addCommentResponse);
+String commentId= js.getString("id");
+//Add Attachment
+given().header("X-Atlassian-Token","no-check").filter(session).pathParam("key", "10101")
+.header("Content-Type","multipart/form-data")
+.multiPart("file",new File("jira.txt")).when().
+post("rest/api/2/issue/{key}/attachments").then().log().all().assertThat().statusCode(200);
+//Get Issue
+String issueDetails=given().filter(session).pathParam("key", "10101")
+.queryParam("fields", "comment")
+.log().all().when().get("/rest/api/2/issue/{key}").then()
+.log().all().extract().response().asString();
+System.out.println(issueDetails);
+JsonPath js1 =new JsonPath(issueDetails);
+int commentsCount=js1.getInt("fields.comment.comments.size()");
+for(int i=0;i<commentsCount;i++)
+{
+String commentIdIssue =js1.get("fields.comment.comments["+i+"].id").toString();
+if (commentIdIssue.equalsIgnoreCase(commentId))
+{
+String message= js1.get("fields.comment.comments["+i+"].body").toString();
+System.out.println(message);
+Assert.assertEquals(message, expectedMessage);
+}
+}
+}
+}
+_____________
+
+
+
+Oauth Mechanism 2.0 (Strong and flexiable secured mechanism)
+
+follows indsturial standarad authorization to acesss API
+
+Comes with multiple grandtypes - authorization code and client credentials are the mostly used grand types
+ 
+getOuth Code
+
+Scope
+AuthorzationUrl
+CliendID
+ResponseType
+Redirecttourl
+state
+
+Serilization - Its a process of Converting Java object in to Request payload (Json/XML) - We will be setters and getters methods 
+and DeSerilization - Its a process of converting request payload in to java object
+
+Reuired json 
+{
+"message":"Hello",
+"greet":"Hi"
+}
+
+POJO Classes
+
+Public Class Message{
+Private String message;
+Private String greet;
+
+Public void getMessage(String message){
+return message;
+}
+Public void setMessage(String message){
+this.message = message;
+}
+}
+
+Message m = new Message();
+m.setMessage("Hello");
+m.setGreet("Hi") 
+
+Request and Response Specfic Builders 
+
+RestAssured provides you the method .spec() (Request Specification to Merge) - Which will accept the object of RequestSpecficBuilder 
+or ResponseSpecificBuilder Class
+
+RequestSpecifcBuilder Class - with this we can able to build the commonly used values like
+header,baseURI, query Param, etc. and can be used in test class
+
+--test case specfic details, we can not able to generalize it
+
+
+given, when, then
+
+requestBuilder
+
+what are all attached to the "given" will call its as a request
+What are all attached to "when" is sending to API
+things are attached to "then" is what we got back as response
+
+given() is the request, after "when" wil submit it and after "then" will get the result
+
+
+RequestSpecification req = new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com")
+				.addQueryParam("key", "qaclick123").setContentType(ContentType.JSON).build();
+ResponseSpecification res = new ResponseSpecBuilder().expectStatusCode(200).expectContentType(ContentType.JSON)
+				.build();
+String response = given().spec(req).when().post("/maps/api/place/add/json").then().spec(res).extract()
+				.response().asString();
+
+
+				
+what are all attached to the "given" will call its as a request
+What are all attached to "when" is sending to API
+things are attached to "then" is what we got back as response
+
+given() is the request, after "when" wil submit it and after "then" will get the result
+
+
+RequestSpecification req = new RequestSpecBuilder().setBaseUri("https://rahulshettyacademy.com")
+				.addQueryParam("key", "qaclick123").setContentType(ContentType.JSON).build();
+ResponseSpecification res = new ResponseSpecBuilder().expectStatusCode(200).expectContentType(ContentType.JSON)
+				.build();
+String response = given().spec(req).when().post("/maps/api/place/add/json").then().spec(res).extract()
+				.response().asString();
+
+RequestSpecification - Allows you to specify how the request will look like.
+				
+Rest Assured - Testing and validating the rest services
+
+
+
+200 - OK -the action was successfull and the response message inculde the representation of status
+201 - Created - Sucessefull and as a result resource has been created
+404 - not found - server can not find the resources, either resources does not exist or previosuly deleted
+405 (Method Not Allowed) status code indicates that the method received in the request-line 
+is known by the origin server but not supported by the target resource.
+
+403 - forbideen
+
+202 - the request has been accecpted for processing but the processing has not been completed
+204 - the request has been sucessfully fulfied by server and there is no content to send in the response payload body
+
+
+
+
+given().log().all().post() - What are all the request paramater need to be pased to any of the http methods(get,put,delete,Post) request will be
+build by using the request specification with the given() method and the same can be loged by using the log().all()
+
+log() - returns - request log specification - used to log different parts of request specification
+all()- returns request specification - used to log everthing
+given(). -returns -  request specification - start building the part of the test
+
+below are the request specification parameter
+
+--
+Request URI:	https://restful-booker.herokuapp.com/booking
+Proxy:			<none>
+Request params:	<none>
+Query params:	<none>
+Form params:	<none>
+Path params:	<none>
+Headers:		Accept=*/*
+				Content-Type=application/json
+Cookies:		<none>
+Multiparts:		<none>
+Body:
+{
+    "firstname": "hudfmp",
+    "lastname": "jyaxhn",
+    "totalprice": 1100,
+    "depositpaid": true,
+    "bookingdates": {
+        "checkin": "2022-04-20",
+        "checkout": "2019-04-21"
+    },
+    "additionalneeds": "Lunch"
+}
+--
+
+URI - Uniform Resource Identifier
+URN - Uniform Resource Name
+URL - Uniform Resource Locator
+
+
+
+--
+
+1, baseURI- it will used by the restAssured when making the request if non fully qualified uri used in the request
+2. given() (Request Specification) used to start building the request path by the various parameter
+and it will send it to any of the http methods(Post, put,delete, get) and extract the response body
+given() - Returns ResquestSpecification
+3. log().all() - request log specification - helps us to log different parts of request specifiaction
+all()- log everything in the specification
+log() - Returns RequestLogSpecification
+all() - Returns ResquestSpecification
+
+when()- Returns - Request Specification
+then() - Returns - Validateable Response
+
+various paramaters
+Request URI, cookie, header,multipart,proxy, path param,query param, request param, form param,body
+Request URI, cookie, header,multipart,proxy, path param,query param, request param, form param,body
+
+__________----
+
+
+
+MAVEN is build a management tool and project managment tool
+1. Central Repo to get Jars - Sharing project with mutiple people (100) with hardcorded jars, then it will not work for other users 
+and also any version of jar got updated wont work for others
+2. Maintain common structure (frame work skeletion)
+src->Main->Java->.com->mycompany->app->app.java ( Main contains of Test data need for test, utility, commom methods, Page Obecjts)
+src->Test(Actual tests)
+pom.xml
+3. Flexablity in intergrate with CI Jenkins - There are maven commands which will help us to run tests in Jenkins
+4. Plugins for Text Exceution
+
+Jenkins Pass - 3fb617ceaaa14ee59204b4f479b6b6be
+
+lifecycle  - validate, compile, test, package, verfiy, install , deploy
+
+
+
+
+Artificates
+Group ID -Maven will idenfiy the projects uniquely across other projects
+Artifict ID - its a subcategory of GroupID - helps to find the jar
+version- looks for the specific version and pulls in to the project
+Archetype:generate - helps to create project from archtype
+
+mvn archetype:generate -DgroupId=Falcon -DartifactId=web -DarcheTypeArtifactID=maven-archetype-quickstart -DinteractiveMode=false
+
+Need to create a class file (mvn eclipse:eclipse)in order import the created project in eclipse
+the above command will create two files (classfile and propertiesfile)
+
+
+Ccucmber - BDD(Bheaviour ) is a powerfull framework execution systems for running and maintaining automation tests
+Data Driven, Execution Control, paramaterziation, hooks, reports and automation utility and many more
+1.No coding is required to implement framework functionality
+2. Follows Gerkhin and BDD
+
+Gerkhin (Bussiness 
+
+readable,Domain specific Language ) - Is a langauage to define the  test cases or lets you decribe softwares's behaivour
+
+Keyword in Cucumber - Sceanrio, feature, feature file, sceanrio outline, step definition
+
+In Cucumber - Sceanrios are represented test cases, each and every scenario is definded with gerkhin language
+
+Given - Preconditions
+When - to descibe user actions
+Then - to observe the expected outcome
+AND - (Postivity testing) Multiple validations, we can use AND and seprate it
+BUT - (Negativity testing) 
+
+In order to, as a , I want - are the optinal lines - to describe more about feature
+
+
+Feature - represents the bussiness requirement
+Scenario - To represent the test cases and its defined with the gerkhin language
+Feature File - 	Consists of multiple scenarios (Multiple test cases) or its a suite file and its a .feature extensions
+Step definiation - will actually implement the code
+Sceanrio outline - paramaterzation
+
+Cucumber Installation
+1. Java, system variable, eclipse, Natural Plugin, cucumber project skelton obtained by maven, cucumber supports quick start template
+
+
+tidygherking chrome plugin to generate step defeintion file based on feature file
+
+
+---
+
+___
+
+Docker - Docker are container management systems - Kewords are develop, ship and run
+develop the applciation, ship in to container and run the application anywhere
+
+Docker container can be deployed anywhere, physical machine, virtual machine , cloud
+
+Docker for mac - It allowes one to run docker container on MAC OS
+Docker for Windows - It allowes one to run docker container on Winodws OS
+Docker for Linux - It allowes one to run docker container on linux OS
+Docker Engine - its used for building docker images and docker containers
+Docker Hub - This is registry used to host the various docker images
+Docker Compose - it used to define application using multiple docker containers
+
+Commands
+
+docker run - After installation of Docker - to verify the simple run Helloword docker container 
+docker run image -- docker run hello-world
+sudo docker pull {imageName} - can able to download the docker images in local machine
+// sudo - runs with  the root access
+sudo docker run -it {ImageName} /bin/bash  -- Download from Docker Hub and Install in machine, it - iteractive mode
+docker images
+sudo docker images
+docker rmi {ImagedID} - Removes docker images on the systems
+docker images - to list all the images
+docker images -q - to return images ID's only of images
+sudo docker inspect {imagename}
+
+docker ps - to list  all of the  container
+docker top {containerID} - top processer
+docker stop {containerID} - Stop the container
+docker rm {ContainerID} - delete the conatiner
+
+docker stats {ContainerID} - staticitics of the conatiner
+docker attach {containerID} - attached the running Container
+docker pause {} - pause the processes in running conatiner
+docker unpause {}
+docker kill {} - kill the processes in running container
+
+
+
+
+GIT (Version Control Managment Systems) - Tracks all your project versions and activity when multiple people working in the project and people activity
+GITHUB (Repositry where codes will be managed gloabally with intellence artificant) - All people can be acess and do commit and merge
+
+GIT Command prompt to talk to GITHUB
+Tortise Git(GUI Tool) to talk to GITHUB
+Eclipse plugin to talk to GITHUB
+Intellj plugin to talk to GITHUB
+
+Based on the git commands, platforms(Tortise,Eclipse,Intelj) they build their own UI to connect and talk with GITHUB
+
+Need to communicate to GITHUB who we are, so far that we need to proivde the name and eamil address by using below commands
+
+git config --global user.name ""
+git config --global user.email ""
+git init - Makes to tell the project to github (initilazing the project) If Github wants to read the local project - Git opens one file and then takes the code
+Initialized empty Git repository in C:/Users/sony/gitfolder/.git/
+
+
+We have a code
+Initiliaze it as a GIT Repo - git init
+
+Stagging - commit
+stagging is like 1st level commit
+commit is like a final commit or second level commit
+
+commits - Commits the code wich is presented in stagging only
+github takes the files which are commited
+
+Need to add the address first and need to push (connect to the remote server from local repo)
+
+When we create repo, by default we will be in master branch
+
+If you to clone any fresh repositry
+git clone - used to extarct the code present in the repositry for the first time
+
+git pull - pull pulls only the update happened after the clone 
+
+GITHUB - will only accept the commited files
+
+Git Checkout -b develop (Cretaes a new branch and switch on it)
+git check develop(to switch to exisiting branch)
+
+GIT COMMANDS
+git config --global user.name ""
+git config --global user.email ""
+git init
+git add * - add all files to stagging
+git status 
+git commit -m "" - Commit changes
+git remote add origin https://github.com/satheeshv40/selenium.git (Connection between the local and remote repo)
+git push origin master
+git clone https://github.com/satheeshv40/selenium.git
+
+Branches
+
+git checkout -b develop
+git branches
+git commit -m "develop branch"
+git push origin develop
+git pull origin develop
+
+Loggers - Logs
+
+log4j - it a logging framework written in Java, its a reliable , fast and flexible
+why we need log 4j and Importance of log4j 
+
+1, send the entire logs in file 
+2, only only error logs in pack A 
+3, log all value in pack B 
+4, logs with timestamp and logs with specific week 
+5 how do we differentaite sucess and failure logs
+
+Logger log = LogManager.getLogger(classname)
+LogManager is the  API/Class which has the function of getLogger which accepts the class arguments
+to print logs there are multiple ways
+log.debug
+log.fatual
+log.trace
+log.information
+log.error
+We need to define one configuration file to define the logs. if its not configured it uses the default configuration (which only prints error message in the console)
+
+Use log. Error() to log when elements are not displayed in the page or if any validations fail
+Use Log. Debug()
+When each Selenium action is performed like click, SendKeys, getText()
+Use log.info()
+When operation is successfully completed ex: After loading page, or after any successful validations
+It’s just counterpart to log. Error()
+
+Configuration files
+appenders tag - where to log (console or log file)
+inside appenders tag - patternlayout tag - helps us to sepcfiy the how the log should get printed
+logger tag - helps us to whar are the things need to log
+root level = error 
+root level = trace
+<AppenderRef>
+
+configuration XML below
+_________________________________________________________
+
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+       <Properties>
+<Property name="basePath">./logs</Property>
+</Properties>
+ 
+  <Appenders>
+      <RollingFile name="File" fileName="${basePath}/prints.log" filePattern="${basePath}/prints-%d{yyyy-MM-dd}.log">
+     <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+      <SizeBasedTriggeringPolicy size="500" />
+          </RollingFile>
+    <Console name="Console" target="SYSTEM_OUT">
+      <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+    </Console>
+  </Appenders>
+  <Loggers>
+    <Root level="trace">\\
+      <AppenderRef ref="File"/>
+    </Root>
+  </Loggers>
+</Configuration>
+_____________________________________________________
+
+log.debug - Actions
+log.info - Action response	
+
+Selenium Exceptions 
+-------------------
+
+Exceptions Faced - 1, org.openqa.selenium.ElementClickInterceptedException, 2, org.openqa.selenium.interactions.MoveTargetOutOfBoundsException
+3. 
+Exception in thread "main" org.openqa.selenium.ElementClickInterceptedException: element click intercepted: Element <div class="DayPicker-Day" tabindex="-1" role="gridcell" aria-label="Thu Dec 15 2022" aria-disabled="false" aria-selected="false">...</div> is not clickable at point (890, 485). Other element would receive the click: <button class="primaryBtn" type="button">...</button>
+  (Session info: chrome=101.0.4951.67)
+Exception in thread "main" org.openqa.selenium.interactions.MoveTargetOutOfBoundsException: move target out of bounds
+  (Session info: chrome=101.0.4951.67)
+Exception in thread "main" org.openqa.selenium.NoSuchElementException: no such element: Unable to locate element: {"method":"xpath","selector":"//*[@href="1.07button.htl"]"}
+  (Session info: chrome=101.0.4951.67)
+Exception in thread "main" java.lang.IllegalStateException: The path to the driver executable must be set by the webdriver.chrome.driver system property; for more information, see https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver. The latest version can be downloaded from http://chromedriver.storage.googleapis.com/index.html
+	at com.google.common.base.Preconditions.checkState(Preconditions.java:847)
+Exception in thread "main" org.openqa.selenium.InvalidSelectorException: invalid selector: Unable to locate an element with the xpath expression //[@href='1.07button_validate.html'] because of the following error:
+SyntaxError: Failed to execute 'evaluate' on 'Document': The string '//[@href='1.07button_validate.html']' is not a valid XPath expression.
+Exception in thread "main" java.lang.IllegalArgumentException: Keys to send should be a not null CharSequence
+	at org.openqa.selenium.remote.RemoteWebElement.sendKeys(RemoteWebElement.java:93)
+Exception in thread "main" org.openqa.selenium.NoSuchSessionException: invalid session id
+Build info: version: '3.141.59', revision: 'e82be7d358', time: '2018-11-14T08:17:03'
+Exception in thread "main" org.openqa.selenium.support.ui.UnexpectedTagNameException: Element should have been "select" but was "form"
+Build info: version: '3.141.59', revision: 'e82be7d358', time: '2018-11-14T08:17:03'
+Exception in thread "main" org.openqa.selenium.NoAlertPresentException: no such alert
+  (Session info: chrome=101.0.4951.67)
+Exception in thread "main" org.openqa.selenium.UnhandledAlertException: unexpected alert open: {Alert text : Good Job.. You clicked on Green. Navigate to next challenge.}
+  (Session info: chrome=101.0.4951.67): Good Job.. You clicked on Green. Navigate to next challenge.
+Exception in thread "main" org.openqa.selenium.WebDriverException: unknown error: net::ERR_CONNECTION_REFUSED
+549
+[[ChromeDriver: chrome on WINDOWS (b1be6e1b523720bfd0dbea290d44867b)] -> id: drag1]
+Exception in thread "main" org.openqa.selenium.interactions.MoveTargetOutOfBoundsException: move target out of bounds
+  (Session info: chrome=101.0.4951.67)  
+Exception in thread "main" java.lang.IllegalStateException: The path to the driver executable must be set by the webdriver.chrome.driver system property; for more information, see https://github.com/SeleniumHQ/selenium/wiki/ChromeDriver. The latest version can be downloaded from http://chromedriver.storage.googleapis.com/index.html
+	at com.google.common.base.Preconditions.checkState(Preconditions.java:847)
+ org.apache.maven.surefire.booter.SurefireBooterForkException: There was an error in the forked process
+ http://cwiki.apache.org/confluence/display/MAVEN/MojoExecutionException
+	
+	
+	
+Selenium JAVA
+1. Construstor 
+WebElement dplist = driver.findElement(By.xpath("//select"));
+Select sel = new Select(dplist);
+2. Capabilities cabs = ((RemoteWebDriver)driver).getCapabilities();
+3. Set<String> windows =driver.getWindowHandles();
+		List<String> tabs = new ArrayList<String>(windows);
+		System.out.println("No of windows --> "+ tabs.size());
+		driver.switchTo().window(tabs.get(0));
+		System.out.println(driver.getTitle());
+		driver.switchTo().window(tabs.get(1));
+		System.out.println(driver.getTitle());
+		driver.close();

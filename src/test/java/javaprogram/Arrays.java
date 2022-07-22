@@ -9,7 +9,7 @@ public class Arrays {
 
 		String[] fruits = {"apple", "grape", "banana","orange","apple1"};
 		System.out.println(fruits);
-		//Arrays.class.toString(fruits);
+		//Arrays.toString(fruits);
 	}
 
 

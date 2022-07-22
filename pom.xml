@@ -35,6 +35,15 @@
 </dependency>
 <!-- https://mvnrepository.com/artifact/com.google.zxing/javase -->
 
+<!-- https://mvnrepository.com/artifact/com.relevantcodes/extentreports -->
+
+<dependency>
+    <groupId>com.aventstack</groupId>
+    <artifactId>extentreports</artifactId>
+    <version>5.0.9</version>
+</dependency>
+
+ 
   
 <dependency>
     <groupId>org.apache.commons</groupId>

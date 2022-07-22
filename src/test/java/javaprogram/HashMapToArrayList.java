@@ -4,6 +4,7 @@ import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class HashMapToArrayList {
 
@@ -19,8 +20,11 @@ public class HashMapToArrayList {
 		System.out.println(map.entrySet());
 		
 		System.out.println(map.keySet());
-		
+		System.out.println(map.values());
 	
+		for(Entry<String,Integer> entry : map.entrySet()){
+			System.out.println(entry.getKey() +"" + entry.getValue());
+		}
 		
 		List<String> key = new ArrayList<String>(map.keySet());
 		for (String ke:key) {
